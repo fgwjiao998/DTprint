@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登泰印务 - Dengtai Printing</title>
+    <!-- 引入图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0056b3;
+            --secondary: #ff9800;
+            --text-dark: #333;
+            --text-light: #666;
+            --bg-light: #f9f9f9;
+        }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 0; color: var(--text-dark); line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        /* 顶部导航 */
+        header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; }
+        .logo { font-size: 1.5rem; font-weight: bold; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+        
+        .nav-links { display: flex; gap: 25px; list-style: none; margin: 0; padding: 0; }
+        .nav-links li a { text-decoration: none; color: var(--text-dark); font-weight: 500; cursor: pointer; transition: 0.3s; }
+        .nav-links li a:hover, .nav-links li a.active { color: var(--primary); }
+
+        /* 语言切换按钮样式 */
+        .lang-btn {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .lang-btn:hover { background: #004494; transform: translateY(-2px); }
+
+        /* 页面内容区域 */
+        .page-section { display: none; padding: 60px 0; animation: fadeIn 0.5s; }
+        .page-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 通用组件 */
+        .btn { padding: 12px 25px; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; font-weight: 600; transition: 0.3s; }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-secondary { background: var(--secondary); color: #fff; }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+        
+        h1, h2, h3 { color: var(--text-dark); }
+        .section-title { text-align: center; font-size: 2.2rem; margin-bottom: 50px; color: var(--primary); }
+        .back-btn { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 30px; cursor: pointer; color: var(--primary); font-weight: 500; }
+        .back-btn:hover { color: var(--secondary); }
+        
+        /* 首页 Hero 区域 */
+        .hero { display: flex; flex-wrap: wrap; align-items: center; gap: 50px; margin-bottom: 60px; }
+        .hero-text { flex: 1; min-width: 300px; }
+        .hero-img { flex: 1; min-width: 300px; }
+        .hero-img img { width: 100%; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        
+        /* 案例/产品网格 */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        
+        /* 可点击的卡片样式 */
+        .card { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; }
+        .card.clickable { cursor: pointer; }
+        .card.clickable:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(0,0,0,0.15); }
+        .card img { width: 100%; height: 220px; object-fit: cover; }
+        .card-body { padding: 20px; }
+        .card-tag { background: var(--bg-light); color: var(--primary); padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; display: inline-block; margin-bottom: 10px; }
+        .card-price { color: var(--secondary); font-weight: bold; font-size: 1.1rem; }
+        .card-specs { color: #666; font-size: 0.85rem; margin-top: 10px; }
+        
+        /* 查看更多提示 */
+        .view-more { display: inline-flex; align-items: center; gap: 5px; color: var(--primary); font-weight: 500; margin-top: 15px; }
+        .card.clickable:hover .view-more { color: var(--secondary); }
+        .view-more i { transition: 0.3s; }
+        .card.clickable:hover .view-more i { transform: translateX(5px); }
+        
+        /* FAQ */
+        details { background: var(--bg-light); margin-bottom: 15px; padding: 15px 20px; border-radius: 8px; cursor: pointer; border-left: 4px solid var(--primary); }
+        summary { font-weight: bold; outline: none; }
+        details[open] summary { margin-bottom: 10px; color: var(--primary); }
+        
+        /* 报价表单 */
+        .quote-form { background: #fff; padding: 40px; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); max-width: 800px; margin: 0 auto; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--primary); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        
+        /* 页脚 */
+        footer { background: #1a1a1a; color: #fff; padding: 60px 0 20px; margin-top: 60px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 40px; }
+        .footer-col h4 { color: var(--secondary); margin-bottom: 20px; }
+        .footer-col ul { list-style: none; padding: 0; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col a { color: #aaa; text-decoration: none; cursor: pointer; }
+        .footer-col a:hover { color: #fff; }
+        .copyright { text-align: center; border-top: 1px solid #333; padding-top: 20px; color: #666; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<!-- 导航栏 -->
+<header>
+    <div class="container">
+        <nav>
+            <div class="logo">
+                <i class="fas fa-print"></i> <span data-key="company_name">登泰印务</span>
+            </div>
+            <ul class="nav-links">
+                <li><a onclick="switchPage('home')" data-key="nav_home">首页</a></li>
+                <li><a onclick="switchPage('about')" data-key="nav_about">关于我们</a></li>
+                <li><a onclick="switchPage('products')" data-key="nav_products">产品中心</a></li>
+                <li><a onclick="switchPage('cases')" data-key="nav_cases">案例展示</a></li>
+                <li><a onclick="switchPage('contact')" data-key="nav_contact">联系我们</a></li>
+            </ul>
+            <button class="lang-btn" onclick="toggleLanguage()">
+                <i class="fas fa-globe"></i> <span id="lang-btn-text">English</span>
+            </button>
+        </nav>
+    </div>
+</header>
+
+<!-- ============ 首页 ============ -->
+<div id="home" class="page-section active">
+    <div class="container">
+        <div class="hero">
+            <div class="hero-text">
+                <h1 style="font-size: 2.5rem; margin-bottom: 20px;" data-key="home_title">现代化综合印刷企业</h1>
+                <p style="color: #666; margin-bottom: 20px; font-size: 1.1rem;" data-key="home_desc_1">登泰印务成立于 1993 年，是一家集设计、制版、印刷、装订、物流于一体的现代化综合印刷企业。我们拥有海德堡 XL106、罗兰 700 等世界顶级印刷设备。</p>
+                <p style="color: #666; margin-bottom: 30px; font-size: 1.1rem;" data-key="home_desc_2">经过 30 年的发展，我们已从最初的小型印刷作坊成长为拥有 5000 平米现代化生产基地、50 余人专业团队的行业领先企业。</p>
+                <button class="btn btn-primary" onclick="switchPage('contact')" data-key="btn_contact">联系我们</button>
+            </div>
+            <div class="hero-img">
+                <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800" alt="Factory">
+            </div>
+        </div>
+
+        <h2 class="section-title" data-key="title_cases">精选案例</h2>
+        <div class="grid">
+            <div class="card clickable" onclick="switchPage('cases')">
+                <img src="https://images.unsplash.com/photo-1616401784845-180882ba9ba8?w=800" alt="Case 1">
+                <div class="card-body">
+                    <span class="card-tag" data-key="tag_packaging">包装印刷</span>
+                    <h3 data-key="case_1_title">食品不干胶标签</h3>
+                    <p style="color:#666; font-size:0.9rem;" data-key="case_1_desc">工艺：防水覆膜，食品级安全材料</p>
+                    <span class="view-more"><span data-key="view_all_cases">查看更多案例</span> <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </div>
+            <div class="card clickable" onclick="switchPage('cases')">
+                <img src="https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=800" alt="Case 2">
+                <div class="card-body">
+                    <span class="card-tag" data-key="tag_luxury">高端礼盒</span>
+                    <h3 data-key="case_2_title">化妆品包装</h3>
+                    <p style="color:#666; font-size:0.9rem;" data-key="case_2_desc">工艺：烫金 + 局部 UV，提升品牌质感</p>
+                    <span class="view-more"><span data-key="view_all_cases">查看更多案例</span> <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </div>
+            <div class="card clickable" onclick="switchPage('cases')">
+                <img src="https://images.unsplash.com/photo-1544816155-12df9643f363?w=800" alt="Case 3">
+                <div class="card-body">
+                    <span class="card-tag" data-key="tag_publication">出版印刷</span>
+                    <h3 data-key="case_3_title">企业宣传画册</h3>
+                    <p style="color:#666; font-size:0.9rem;" data-key="case_3_desc">工艺：精装锁线，色彩还原度高</p>
+                    <span class="view-more"><span data-key="view_all_cases">查看更多案例</span> <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============ 关于我们 ============ -->
+<div id="about" class="page-section">
+    <div class="container">
+        <h2 class="section-title" data-key="nav_about">关于我们</h2>
+        <div style="text-align: center; max-width: 800px; margin: 0 auto 60px;">
+            <p style="font-size: 1.2rem; color: #555;" data-key="about_intro">致力于为全球客户提供最优质、高效的印刷服务体验。30 年专业经验，值得信赖。</p>
+        </div>
+        <div class="grid">
+            <div class="card" style="text-align: center; padding: 40px 20px;">
+                <i class="fas fa-industry" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
+                <h3 data-key="feat_1_title">5000 平米基地</h3>
+                <p style="color:#666;" data-key="feat_1_desc">现代化生产基地，产能强大</p>
+            </div>
+            <div class="card" style="text-align: center; padding: 40px 20px;">
+                <i class="fas fa-users" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
+                <h3 data-key="feat_2_title">50+ 专业团队</h3>
+                <p style="color:#666;" data-key="feat_2_desc">行业领先技术人才，服务周到</p>
+            </div>
+            <div class="card" style="text-align: center; padding: 40px 20px;">
+                <i class="fas fa-truck" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
+                <h3 data-key="feat_3_title">全球物流</h3>
+                <p style="color:#666;" data-key="feat_3_desc">安全快捷，准时送达</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============ 产品中心 ============ -->
+<div id="products" class="page-section">
+    <div class="container">
+        <h2 class="section-title" data-key="nav_products">产品中心</h2>
+        <div class="grid">
+            <div class="card clickable" onclick="switchPage('product-box')">
+                <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800" alt="Product 1">
+                <div class="card-body">
+                    <h3 data-key="prod_1">包装盒定制</h3>
+                    <p style="color:#666;" data-key="prod_1_desc">各类礼品盒、电子产品包装</p>
+                    <span class="view-more"><span data-key="view_more">查看详情</span> <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </div>
+            <div class="card clickable" onclick="switchPage('product-manual')">
+                <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=800" alt="Product 2">
+                <div class="card-body">
+                    <h3 data-key="prod_2">说明书/画册</h3>
+                    <p style="color:#666;" data-key="prod_2_desc">产品手册、企业期刊、宣传册</p>
+                    <span class="view-more"><span data-key="view_more">查看详情</span> <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </div>
+            <div class="card clickable" onclick="switchPage('product-label')">
+                <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800" alt="Product 3">
+                <div class="card-body">
+                    <h3 data-key="prod_3">标签贴纸</h3>
+                    <p style="color:#666;" data-key="prod_3_desc">不干胶标签、防伪标签</p>
+                    <span class="view-more"><span data-key="view_more">查看详情</span> <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 60px; background: var(--bg-light); padding: 40px; border-radius: 10px; text-align: center;">
+            <h3 style="margin-bottom: 20px;" data-key="tech_title">核心工艺</h3>
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
+                <span class="card-tag" style="font-size: 1rem; padding: 10px 20px;" data-key="tech_1">烫金/烫银</span>
+                <span class="card-tag" style="font-size: 1rem; padding: 10px 20px;" data-key="tech_2">UV 局部上光</span>
+                <span class="card-tag" style="font-size: 1rem; padding: 10px 20px;" data-key="tech_3">模切成型</span>
+                <span class="card-tag" style="font-size: 1rem; padding: 10px 20px;" data-key="tech_4">专色印刷</span>
+                <span class="card-tag" style="font-size: 1rem; padding: 10px 20px;" data-key="tech_5">击凸/击凹</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============ 包装盒定制详情页 ============ -->
+<div id="product-box" class="page-section">
+    <div class="container">
+        <span class="back-btn" onclick="switchPage('products')"><i class="fas fa-arrow-left"></i> <span data-key="back_products">返回产品中心</span></span>
+        <h2 class="section-title" data-key="prod_1">包装盒定制</h2>
+        <p style="text-align:center; max-width:700px; margin:0 auto 50px; color:#666;" data-key="prod_box_intro">我们提供各类高品质包装盒定制服务，从设计到成品一站式解决方案。</p>
+        
+        <div class="grid">
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800" alt="Box 1">
+                <div class="card-body">
+                    <h3 data-key="box_prod_1">礼品包装盒</h3>
+                    <p class="card-specs" data-key="box_prod_1_spec">材质：特种纸 | 工艺：烫金 + 击凸</p>
+                    <p class="card-price" data-key="box_prod_1_price">¥5.00 起</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1589365278144-cd358e61100d?w=800" alt="Box 2">
+                <div class="card-body">
+                    <h3 data-key="box_prod_2">电子产品包装盒</h3>
+                    <p class="card-specs" data-key="box_prod_2_spec">材质：灰板纸 + 铜版纸 | 工艺：UV+ 覆膜</p>
+                    <p class="card-price" data-key="box_prod_2_price">¥8.00 起</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1605648916361-9bc12ad6a569?w=800" alt="Box 3">
+                <div class="card-body">
+                    <h3 data-key="box_prod_3">食品包装盒</h3>
+                    <p class="card-specs" data-key="box_prod_3_spec">材质：食品级白卡纸 | 工艺：环保油墨</p>
+                    <p class="card-price" data-key="box_prod_3_price">¥3.50 起</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1544816155-12df9643f363?w=800" alt="Box 4">
+                <div class="card-body">
+                    <h3 data-key="box_prod_4">化妆品包装盒</h3>
+                    <p class="card-specs" data-key="box_prod_4_spec">材质：艺术纸 | 工艺：烫银 + 局部 UV</p>
+                    <p class="card-price" data-key="box_prod_4_price">¥6.00 起</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1616401784845-180882ba9ba8?w=800" alt="Box 5">
+                <div class="card-body">
+                    <h3 data-key="box_prod_5">珠宝包装盒</h3>
+                    <p class="card-specs" data-key="box_prod_5_spec">材质：绒布 + 硬纸板 | 工艺：烫金 + 丝印</p>
+                    <p class="card-price" data-key="box_prod_5_price">¥12.00 起</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=800" alt="Box 6">
+                <div class="card-body">
+                    <h3 data-key="box_prod_6">定制异形盒</h3>
+                    <p class="card-specs" data-key="box_prod_6_spec">材质：按需定制 | 工艺：模切 + 手工组装</p>
+                    <p class="card-price" data-key="box_prod_6_price">¥15.00 起</p>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align:center; margin-top:50px;">
+            <button class="btn btn-primary" onclick="switchPage('quote')" data-key="btn_get_quote">免费获取报价</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============ 说明书/画册详情页 ============ -->
+<div id="product-manual" class="page-section">
+    <div class="container">
+        <span class="back-btn" onclick="switchPage('products')"><i class="fas fa-arrow-left"></i> <span data-key="back_products">返回产品中心</span></span>
+        <h2 class="section-title" data-key="prod_2">说明书/画册</h2>
+        <p style="text-align:center; max-width:700px; margin:0 auto 50px; color:#666;" data-key="prod_manual_intro">专业印刷各类产品说明书、企业画册、宣传册，色彩精准，装订精美。</p>
+        
+        <div class="grid">
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1544816155-12df9643f363?w=800" alt="Manual 1">
+                <div class="card-body">
+                    <h3 data-key="manual_prod_1">产品说明书</h3>
+                    <p class="card-specs" data-key="manual_prod_1_spec">尺寸：A5/A4 | 页数：8-64 页 | 装订：骑马钉</p>
+                    <p class="card-price" data-key="manual_prod_1_price">¥0.50 起</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=800" alt="Manual 2">
+                <div class="card-body">
+                    <h3 data-key="manual_prod_2">企业宣传画册</h3>
+                    <p class="card-specs" data-key="manual_prod_2_spec">尺寸：A4 | 页数：16-128 页 | 装订：胶装/精装</p>
+                    <p class="card-price" data-key="manual_prod_2_price">¥8.00 起</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1555445054-01cf52516f55?w=800" alt="Manual 3">
+                <div class="card-body">
+                    <h3 data-key="manual_prod_3">产品目录册</h3>
+                    <p class="card-specs" data-key="manual_prod_3_spec">尺寸：A4/A3 | 页数：32-200 页 | 装订：锁线胶装</p>
+                    <p class="card-price" data-key="manual_prod_3_price">¥12.00 起</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800" alt="Manual 4">
+                <div class="card-body">
+                    <h3 data-key="manual_prod_4">企业年报</h3>
+                    <p class="card-specs" data-key="manual_prod_4_spec">尺寸：A4 | 页数：24-96 页 | 装订：精装</p>
+                    <p class="card-price" data-key="manual_prod_4_price">¥15.00 起</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=800" alt="Manual 5">
+                <div class="card-body">
+                    <h3 data-key="manual_prod_5">培训手册</h3>
+                    <p class="card-specs" data-key="manual_prod_5_spec">尺寸：A5/A4 | 页数：20-100 页 | 装订：圈装/胶装</p>
+                    <p class="card-price" data-key="manual_prod_5_price">¥5.00 起</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1532012197267-da84d127e765?w=800" alt="Manual 6">
+                <div class="card-body">
+                    <h3 data-key="manual_prod_6">精装书刊</h3>
+                    <p class="card-specs" data-key="manual_prod_6_spec">尺寸：16 开/32 开 | 页数：100-500 页 | 装订：精装锁线</p>
+                    <p class="card-price" data-key="manual_prod_6_price">¥20.00 起</p>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align:center; margin-top:50px;">
+            <button class="btn btn-primary" onclick="switchPage('quote')" data-key="btn_get_quote">免费获取报价</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============ 标签贴纸详情页 ============ -->
+<div id="product-label" class="page-section">
+    <div class="container">
+        <span class="back-btn" onclick="switchPage('products')"><i class="fas fa-arrow-left"></i> <span data-key="back_products">返回产品中心</span></span>
+        <h2 class="section-title" data-key="prod_3">标签贴纸</h2>
+        <p style="text-align:center; max-width:700px; margin:0 auto 50px; color:#666;" data-key="prod_label_intro">各类不干胶标签、防伪标签定制，防水防油，粘性强，适用于多种场景。</p>
+        
+        <div class="grid">
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1616401784845-180882ba9ba8?w=800" alt="Label 1">
+                <div class="card-body">
+                    <h3 data-key="label_prod_1">食品标签</h3>
+                    <p class="card-specs" data-key="label_prod_1_spec">材质：食品级不干胶 | 特性：防水防油</p>
+                    <p class="card-price" data-key="label_prod_1_price">¥0.05 起</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1605648916361-9bc12ad6a569?w=800" alt="Label 2">
+                <div class="card-body">
+                    <h3 data-key="label_prod_2">化妆品标签</h3>
+                    <p class="card-specs" data-key="label_prod_2_spec">材质：透明 PET | 工艺：烫金 +UV</p>
+                    <p class="card-price" data-key="label_prod_2_price">¥0.08 起</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=800" alt="Label 3">
+                <div class="card-body">
+                    <h3 data-key="label_prod_3">防伪标签</h3>
+                    <p class="card-specs" data-key="label_prod_3_spec">材质：易碎纸 | 特性：一次性使用</p>
+                    <p class="card-price" data-key="label_prod_3_price">¥0.10 起</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800" alt="Label 4">
+                <div class="card-body">
+                    <h3 data-key="label_prod_4">条码标签</h3>
+                    <p class="card-specs" data-key="label_prod_4_spec">材质：铜版纸 | 特性：可打印条码</p>
+                    <p class="card-price" data-key="label_prod_4_price">¥0.03 起</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800" alt="Label 5">
+                <div class="card-body">
+                    <h3 data-key="label_prod_5">卷筒标签</h3>
+                    <p class="card-specs" data-key="label_prod_5_spec">材质：不干胶卷料 | 特性：自动贴标适用</p>
+                    <p class="card-price" data-key="label_prod_5_price">¥0.04 起</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1555445054-01cf52516f55?w=800" alt="Label 6">
+                <div class="card-body">
+                    <h3 data-key="label_prod_6">特殊材质标签</h3>
+                    <p class="card-specs" data-key="label_prod_6_spec">材质：铝箔/合成纸 | 特性：耐高温/耐腐蚀</p>
+                    <p class="card-price" data-key="label_prod_6_price">¥0.15 起</p>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align:center; margin-top:50px;">
+            <button class="btn btn-primary" onclick="switchPage('quote')" data-key="btn_get_quote">免费获取报价</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============ 案例展示 ============ -->
+<div id="cases" class="page-section">
+    <div class="container">
+        <h2 class="section-title" data-key="nav_cases">案例展示</h2>
+        <p style="text-align: center; margin-bottom: 40px; color: #666;" data-key="cases_intro">查看更多我们的成功合作案例，见证品质。</p>
+        <div class="grid">
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1616401784845-180882ba9ba8?w=800" alt="Case 1">
+                <div class="card-body">
+                    <h3 data-key="case_1_title">食品不干胶标签</h3>
+                    <p style="color:#666;" data-key="case_1_desc">工艺：防水覆膜，食品级安全材料</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=800" alt="Case 2">
+                <div class="card-body">
+                    <h3 data-key="case_2_title">化妆品包装</h3>
+                    <p style="color:#666;" data-key="case_2_desc">工艺：烫金 + 局部 UV，提升品牌质感</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1544816155-12df9643f363?w=800" alt="Case 3">
+                <div class="card-body">
+                    <h3 data-key="case_3_title">企业宣传画册</h3>
+                    <p style="color:#666;" data-key="case_3_desc">工艺：精装锁线，色彩还原度高</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1605648916361-9bc12ad6a569?w=800" alt="Case 4">
+                <div class="card-body">
+                    <h3 data-key="case_4_title">书籍装帧</h3>
+                    <p style="color:#666;" data-key="case_4_desc">工艺：精装锁线 + 烫金</p>
+                </div>
+            </div>
+            <!-- 第 5 个案例 - 已修复图片链接 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800" alt="Case 5">
+                <div class="card-body">
+                    <h3 data-key="case_5_title">电子产品包装</h3>
+                    <p style="color:#666;" data-key="case_5_desc">工艺：UV+ 覆膜 + 模切</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800" alt="Case 6">
+                <div class="card-body">
+                    <h3 data-key="case_6_title">食品包装盒</h3>
+                    <p style="color:#666;" data-key="case_6_desc">工艺：环保油墨 + 食品级材料</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============ 联系我们 ============ -->
+<div id="contact" class="page-section">
+    <div style="background:linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.7)),url('https://images.unsplash.com/photo-1562654501-a0ccc0fc3fb1?w=1920'); height:300px; display:flex; align-items:center; justify-content:center; color:#fff; text-align:center; margin-bottom: 40px;">
+        <div>
+            <h1 style="font-size: 3rem; margin: 0;" data-key="contact_title">联系我们</h1>
+            <p style="font-size: 1.2rem; opacity: 0.9;" data-key="contact_subtitle">期待与您的合作</p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="grid">
+            <div>
+                <h3 style="margin-bottom: 20px;" data-key="contact_info">联系方式</h3>
+                <ul style="list-style: none; padding: 0; line-height: 2.5; font-size: 1.1rem;">
+                    <li><i class="fas fa-phone" style="color: var(--primary); width: 30px;"></i> 400-888-6666</li>
+                    <li><i class="fas fa-envelope" style="color: var(--primary); width: 30px;"></i> sales@dengtai-print.com</li>
+                    <li><i class="fas fa-map-marker-alt" style="color: var(--primary); width: 30px;"></i> <span data-key="address">深圳市工业园 A 区 8 号</span></li>
+                </ul>
+                <button class="btn btn-secondary" style="margin-top: 20px;" onclick="switchPage('quote')" data-key="btn_quote">获取免费报价</button>
+            </div>
+            <div>
+                <h3 style="margin-bottom: 20px;" data-key="faq_title">常见问题</h3>
+                <details>
+                    <summary data-key="faq_q1">文件要求是什么？</summary>
+                    <div style="color: #666; margin-top: 10px;" data-key="faq_a1">格式：AI/CDR/PDF | 色彩模式：CMYK | 分辨率：300dpi 以上 | 出血：3mm</div>
+                </details>
+                <details>
+                    <summary data-key="faq_q2">出现质量问题如何处理？</summary>
+                    <div style="color: #666; margin-top: 10px;" data-key="faq_a2">收货后 7 天内发现质量问题，免费重印。因我方原因导致延期，按日补偿订单金额 1%。</div>
+                </details>
+                <details>
+                    <summary data-key="faq_q3">起订量是多少？</summary>
+                    <div style="color: #666; margin-top: 10px;" data-key="faq_a3">根据工艺不同，起订量有所区别，一般胶印 500 起，数码印刷 1 本起。</div>
+                </details>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============ 报价页面 ============ -->
+<div id="quote" class="page-section">
+    <div class="container">
+        <span class="back-btn" onclick="switchPage('products')"><i class="fas fa-arrow-left"></i> <span data-key="back_products">返回产品中心</span></span>
+        <h2 class="section-title" data-key="quote_title">免费获取报价</h2>
+        <p style="text-align:center; max-width:700px; margin:0 auto 40px; color:#666;" data-key="quote_intro">填写以下信息，我们的销售团队将在 24 小时内为您提供详细报价。</p>
+        
+        <div class="quote-form">
+            <form onsubmit="event.preventDefault(); alert('提交成功！我们将尽快联系您。');">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label data-key="form_name">您的姓名</label>
+                        <input type="text" required placeholder="请输入姓名">
+                    </div>
+                    <div class="form-group">
+                        <label data-key="form_company">公司名称</label>
+                        <input type="text" placeholder="请输入公司名称">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label data-key="form_phone">联系电话</label>
+                        <input type="tel" required placeholder="请输入手机号码">
+                    </div>
+                    <div class="form-group">
+                        <label data-key="form_email">电子邮箱</label>
+                        <input type="email" required placeholder="请输入邮箱地址">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label data-key="form_product">产品类型</label>
+                        <select>
+                            <option data-key="opt_box">包装盒</option>
+                            <option data-key="opt_manual">说明书/画册</option>
+                            <option data-key="opt_label">标签贴纸</option>
+                            <option data-key="opt_other">其他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label data-key="form_quantity">预计数量</label>
+                        <select>
+                            <option>100-500</option>
+                            <option>500-1000</option>
+                            <option>1000-5000</option>
+                            <option>5000 以上</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label data-key="form_requirements">详细要求</label>
+                    <textarea rows="4" placeholder="请描述您的产品规格、材质、工艺等要求..."></textarea>
+                </div>
+                <div style="text-align:center;">
+                    <button type="submit" class="btn btn-primary" data-key="btn_submit">提交报价申请</button>
+                </div>
+            </form>
+        </div>
+        
+        <div style="margin-top:50px; text-align:center;">
+            <h3 data-key="quote_contact_title">或直接联系我们</h3>
+            <p style="font-size:1.2rem; color:var(--primary); margin:20px 0;">
+                <i class="fas fa-phone"></i> 400-888-6666
+            </p>
+            <p style="color:#666;" data-key="quote_contact_desc">工作时间：周一至周五 9:00-18:00</p>
+        </div>
+    </div>
+</div>
+
+<!-- 页脚 -->
+<footer>
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4 data-key="footer_about">关于登泰</h4>
+                <p style="color: #aaa; line-height: 1.8; font-size: 0.9rem;" data-key="footer_desc">登泰印务成立于 1993 年，是一家集设计、制版、印刷、装订、物流于一体的现代化综合印刷企业。</p>
+            </div>
+            <div class="footer-col">
+                <h4 data-key="footer_links">快速链接</h4>
+                <ul>
+                    <li><a onclick="switchPage('about')" data-key="nav_about">关于我们</a></li>
+                    <li><a onclick="switchPage('products')" data-key="nav_products">产品中心</a></li>
+                    <li><a onclick="switchPage('cases')" data-key="nav_cases">案例展示</a></li>
+                    <li><a onclick="switchPage('contact')" data-key="nav_contact">联系我们</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4 data-key="footer_support">服务支持</h4>
+                <ul>
+                    <li><a onclick="switchPage('contact')" data-key="link_process">定制流程</a></li>
+                    <li><a onclick="switchPage('contact')" data-key="link_faq">常见问题</a></li>
+                    <li><a onclick="switchPage('contact')" data-key="link_tech">技术品质</a></li>
+                    <li><a onclick="switchPage('quote')" data-key="link_quote">在线询价</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2024 <span data-key="company_name">登泰印务有限公司</span> <span data-key="rights">版权所有</span></p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    const contentConfig = {
+        zh: {
+            company_name: "登泰印务",
+            nav_home: "首页",
+            nav_about: "关于我们",
+            nav_products: "产品中心",
+            nav_cases: "案例展示",
+            nav_contact: "联系我们",
+            
+            home_title: "现代化综合印刷企业",
+            home_desc_1: "登泰印务成立于 1993 年，是一家集设计、制版、印刷、装订、物流于一体的现代化综合印刷企业。我们拥有海德堡 XL106、罗兰 700 等世界顶级印刷设备。",
+            home_desc_2: "经过 30 年的发展，我们已从最初的小型印刷作坊成长为拥有 5000 平米现代化生产基地、50 余人专业团队的行业领先企业。",
+            btn_contact: "联系我们",
+            
+            title_cases: "精选案例",
+            view_all_cases: "查看更多案例",
+            tag_packaging: "包装印刷",
+            case_1_title: "食品不干胶标签",
+            case_1_desc: "工艺：防水覆膜，食品级安全材料",
+            tag_luxury: "高端礼盒",
+            case_2_title: "化妆品包装",
+            case_2_desc: "工艺：烫金 + 局部 UV，提升品牌质感",
+            tag_publication: "出版印刷",
+            case_3_title: "企业宣传画册",
+            case_3_desc: "工艺：精装锁线，色彩还原度高",
+            case_4_title: "书籍装帧",
+            case_4_desc: "工艺：精装锁线 + 烫金",
+            case_5_title: "电子产品包装",
+            case_5_desc: "工艺：UV+ 覆膜 + 模切",
+            case_6_title: "食品包装盒",
+            case_6_desc: "工艺：环保油墨 + 食品级材料",
+            
+            about_intro: "致力于为全球客户提供最优质、高效的印刷服务体验。30 年专业经验，值得信赖。",
+            feat_1_title: "5000 平米基地",
+            feat_1_desc: "现代化生产基地，产能强大",
+            feat_2_title: "50+ 专业团队",
+            feat_2_desc: "行业领先技术人才，服务周到",
+            feat_3_title: "全球物流",
+            feat_3_desc: "安全快捷，准时送达",
+            
+            prod_1: "包装盒定制",
+            prod_1_desc: "各类礼品盒、电子产品包装",
+            prod_2: "说明书/画册",
+            prod_2_desc: "产品手册、企业期刊、宣传册",
+            prod_3: "标签贴纸",
+            prod_3_desc: "不干胶标签、防伪标签",
+            view_more: "查看详情",
+            
+            prod_box_intro: "我们提供各类高品质包装盒定制服务，从设计到成品一站式解决方案。",
+            box_prod_1: "礼品包装盒",
+            box_prod_1_spec: "材质：特种纸 | 工艺：烫金 + 击凸",
+            box_prod_1_price: "¥5.00 起",
+            box_prod_2: "电子产品包装盒",
+            box_prod_2_spec: "材质：灰板纸 + 铜版纸 | 工艺：UV+ 覆膜",
+            box_prod_2_price: "¥8.00 起",
+            box_prod_3: "食品包装盒",
+            box_prod_3_spec: "材质：食品级白卡纸 | 工艺：环保油墨",
+            box_prod_3_price: "¥3.50 起",
+            box_prod_4: "化妆品包装盒",
+            box_prod_4_spec: "材质：艺术纸 | 工艺：烫银 + 局部 UV",
+            box_prod_4_price: "¥6.00 起",
+            box_prod_5: "珠宝包装盒",
+            box_prod_5_spec: "材质：绒布 + 硬纸板 | 工艺：烫金 + 丝印",
+            box_prod_5_price: "¥12.00 起",
+            box_prod_6: "定制异形盒",
+            box_prod_6_spec: "材质：按需定制 | 工艺：模切 + 手工组装",
+            box_prod_6_price: "¥15.00 起",
+            
+            prod_manual_intro: "专业印刷各类产品说明书、企业画册、宣传册，色彩精准，装订精美。",
+            manual_prod_1: "产品说明书",
+            manual_prod_1_spec: "尺寸：A5/A4 | 页数：8-64 页 | 装订：骑马钉",
+            manual_prod_1_price: "¥0.50 起",
+            manual_prod_2: "企业宣传画册",
+            manual_prod_2_spec: "尺寸：A4 | 页数：16-128 页 | 装订：胶装/精装",
+            manual_prod_2_price: "¥8.00 起",
+            manual_prod_3: "产品目录册",
+            manual_prod_3_spec: "尺寸：A4/A3 | 页数：32-200 页 | 装订：锁线胶装",
+            manual_prod_3_price: "¥12.00 起",
+            manual_prod_4: "企业年报",
+            manual_prod_4_spec: "尺寸：A4 | 页数：24-96 页 | 装订：精装",
+            manual_prod_4_price: "¥15.00 起",
+            manual_prod_5: "培训手册",
+            manual_prod_5_spec: "尺寸：A5/A4 | 页数：20-100 页 | 装订：圈装/胶装",
+            manual_prod_5_price: "¥5.00 起",
+            manual_prod_6: "精装书刊",
+            manual_prod_6_spec: "尺寸：16 开/32 开 | 页数：100-500 页 | 装订：精装锁线",
+            manual_prod_6_price: "¥20.00 起",
+            
+            prod_label_intro: "各类不干胶标签、防伪标签定制，防水防油，粘性强，适用于多种场景。",
+            label_prod_1: "食品标签",
+            label_prod_1_spec: "材质：食品级不干胶 | 特性：防水防油",
+            label_prod_1_price: "¥0.05 起",
+            label_prod_2: "化妆品标签",
+            label_prod_2_spec: "材质：透明 PET | 工艺：烫金 +UV",
+            label_prod_2_price: "¥0.08 起",
+            label_prod_3: "防伪标签",
+            label_prod_3_spec: "材质：易碎纸 | 特性：一次性使用",
+            label_prod_3_price: "¥0.10 起",
+            label_prod_4: "条码标签",
+            label_prod_4_spec: "材质：铜版纸 | 特性：可打印条码",
+            label_prod_4_price: "¥0.03 起",
+            label_prod_5: "卷筒标签",
+            label_prod_5_spec: "材质：不干胶卷料 | 特性：自动贴标适用",
+            label_prod_5_price: "¥0.04 起",
+            label_prod_6: "特殊材质标签",
+            label_prod_6_spec: "材质：铝箔/合成纸 | 特性：耐高温/耐腐蚀",
+            label_prod_6_price: "¥0.15 起",
+            
+            tech_title: "核心工艺",
+            tech_1: "烫金/烫银",
+            tech_2: "UV 局部上光",
+            tech_3: "模切成型",
+            tech_4: "专色印刷",
+            tech_5: "击凸/击凹",
+            
+            cases_intro: "查看更多我们的成功合作案例，见证品质。",
+            
+            contact_title: "联系我们",
+            contact_subtitle: "期待与您的合作",
+            contact_info: "联系方式",
+            address: "深圳市工业园 A 区 8 号",
+            btn_quote: "获取免费报价",
+            faq_title: "常见问题",
+            faq_q1: "文件要求是什么？",
+            faq_a1: "格式：AI/CDR/PDF | 色彩模式：CMYK | 分辨率：300dpi 以上 | 出血：3mm",
+            faq_q2: "出现质量问题如何处理？",
+            faq_a2: "收货后 7 天内发现质量问题，免费重印。因我方原因导致延期，按日补偿订单金额 1%。",
+            faq_q3: "起订量是多少？",
+            faq_a3: "根据工艺不同，起订量有所区别，一般胶印 500 起，数码印刷 1 本起。",
+            
+            footer_about: "关于登泰",
+            footer_desc: "登泰印务成立于 1993 年，是一家集设计、制版、印刷、装订、物流于一体的现代化综合印刷企业。",
+            footer_links: "快速链接",
+            footer_support: "服务支持",
+            link_process: "定制流程",
+            link_faq: "常见问题",
+            link_tech: "技术品质",
+            link_quote: "在线询价",
+            rights: "版权所有",
+            
+            back_products: "返回产品中心",
+            btn_get_quote: "免费获取报价",
+            
+            quote_title: "免费获取报价",
+            quote_intro: "填写以下信息，我们的销售团队将在 24 小时内为您提供详细报价。",
+            form_name: "您的姓名",
+            form_company: "公司名称",
+            form_phone: "联系电话",
+            form_email: "电子邮箱",
+            form_product: "产品类型",
+            form_quantity: "预计数量",
+            form_requirements: "详细要求",
+            opt_box: "包装盒",
+            opt_manual: "说明书/画册",
+            opt_label: "标签贴纸",
+            opt_other: "其他",
+            btn_submit: "提交报价申请",
+            quote_contact_title: "或直接联系我们",
+            quote_contact_desc: "工作时间：周一至周五 9:00-18:00"
+        },
+        en: {
+            company_name: "Dengtai Printing",
+            nav_home: "Home",
+            nav_about: "About Us",
+            nav_products: "Products",
+            nav_cases: "Cases",
+            nav_contact: "Contact",
+            
+            home_title: "Modern Integrated Printing Enterprise",
+            home_desc_1: "Established in 1993, Dengtai Printing is a modern integrated enterprise integrating design, platemaking, printing, binding, and logistics. We own world-class equipment like Heidelberg XL106 and Roland 700.",
+            home_desc_2: "After 30 years of development, we have grown from a small workshop into an industry leader with a 5,000 sqm base and a professional team of over 50 people.",
+            btn_contact: "Contact Us",
+            
+            title_cases: "Selected Cases",
+            view_all_cases: "View All Cases",
+            tag_packaging: "Packaging",
+            case_1_title: "Food Adhesive Labels",
+            case_1_desc: "Process: Waterproof lamination, food-grade safe materials",
+            tag_luxury: "Luxury Box",
+            case_2_title: "Cosmetic Packaging",
+            case_2_desc: "Process: Hot stamping + Local UV, enhancing brand texture",
+            tag_publication: "Publication",
+            case_3_title: "Corporate Brochures",
+            case_3_desc: "Process: Hardcover sewn binding, high color reproduction",
+            case_4_title: "Book Binding",
+            case_4_desc: "Process: Hardcover sewn + Hot stamping",
+            case_5_title: "Electronic Product Packaging",
+            case_5_desc: "Process: UV + Lamination + Die Cutting",
+            case_6_title: "Food Packaging Box",
+            case_6_desc: "Process: Eco-friendly ink + Food-grade materials",
+            
+            about_intro: "Committed to providing the highest quality and efficient printing service experience for global customers. 30 years of professional experience, trustworthy.",
+            feat_1_title: "5000 sqm Base",
+            feat_1_desc: "Modern production base, strong capacity",
+            feat_2_title: "50+ Professional Team",
+            feat_2_desc: "Industry-leading technical talent, attentive service",
+            feat_3_title: "Global Logistics",
+            feat_3_desc: "Safe, fast, and on-time delivery",
+            
+            prod_1: "Custom Packaging Boxes",
+            prod_1_desc: "Gift boxes, electronic product packaging",
+            prod_2: "Manuals / Brochures",
+            prod_2_desc: "Product manuals, corporate journals, brochures",
+            prod_3: "Labels & Stickers",
+            prod_3_desc: "Adhesive labels, anti-counterfeit labels",
+            view_more: "View Details",
+            
+            prod_box_intro: "We provide high-quality custom packaging box services, one-stop solution from design to finished product.",
+            box_prod_1: "Gift Packaging Box",
+            box_prod_1_spec: "Material: Specialty Paper | Process: Hot Stamping + Embossing",
+            box_prod_1_price: "From ¥5.00",
+            box_prod_2: "Electronic Product Box",
+            box_prod_2_spec: "Material: Grey Board + Coated Paper | Process: UV + Lamination",
+            box_prod_2_price: "From ¥8.00",
+            box_prod_3: "Food Packaging Box",
+            box_prod_3_spec: "Material: Food-grade White Card | Process: Eco-friendly Ink",
+            box_prod_3_price: "From ¥3.50",
+            box_prod_4: "Cosmetic Packaging Box",
+            box_prod_4_spec: "Material: Art Paper | Process: Hot Silver + Local UV",
+            box_prod_4_price: "From ¥6.00",
+            box_prod_5: "Jewelry Packaging Box",
+            box_prod_5_spec: "Material: Velvet + Hard Board | Process: Hot Stamping + Screen Printing",
+            box_prod_5_price: "From ¥12.00",
+            box_prod_6: "Custom Shaped Box",
+            box_prod_6_spec: "Material: Customized | Process: Die Cutting + Manual Assembly",
+            box_prod_6_price: "From ¥15.00",
+            
+            prod_manual_intro: "Professional printing of product manuals, corporate brochures, and catalogs with precise colors and exquisite binding.",
+            manual_prod_1: "Product Manual",
+            manual_prod_1_spec: "Size: A5/A4 | Pages: 8-64 | Binding: Saddle Stitch",
+            manual_prod_1_price: "From ¥0.50",
+            manual_prod_2: "Corporate Brochure",
+            manual_prod_2_spec: "Size: A4 | Pages: 16-128 | Binding: Perfect/Hardcover",
+            manual_prod_2_price: "From ¥8.00",
+            manual_prod_3: "Product Catalog",
+            manual_prod_3_spec: "Size: A4/A3 | Pages: 32-200 | Binding: Sewn Perfect Binding",
+            manual_prod_3_price: "From ¥12.00",
+            manual_prod_4: "Annual Report",
+            manual_prod_4_spec: "Size: A4 | Pages: 24-96 | Binding: Hardcover",
+            manual_prod_4_price: "From ¥15.00",
+            manual_prod_5: "Training Manual",
+            manual_prod_5_spec: "Size: A5/A4 | Pages: 20-100 | Binding: Spiral/Perfect",
+            manual_prod_5_price: "From ¥5.00",
+            manual_prod_6: "Hardcover Book",
+            manual_prod_6_spec: "Size: 16/32 Open | Pages: 100-500 | Binding: Hardcover Sewn",
+            manual_prod_6_price: "From ¥20.00",
+            
+            prod_label_intro: "Custom adhesive labels and anti-counterfeit labels, waterproof and oil-proof, strong adhesion, suitable for various scenarios.",
+            label_prod_1: "Food Label",
+            label_prod_1_spec: "Material: Food-grade Adhesive | Feature: Waterproof & Oil-proof",
+            label_prod_1_price: "From ¥0.05",
+            label_prod_2: "Cosmetic Label",
+            label_prod_2_spec: "Material: Transparent PET | Process: Hot Stamping + UV",
+            label_prod_2_price: "From ¥0.08",
+            label_prod_3: "Anti-counterfeit Label",
+            label_prod_3_spec: "Material: Fragile Paper | Feature: One-time Use",
+            label_prod_3_price: "From ¥0.10",
+            label_prod_4: "Barcode Label",
+            label_prod_4_spec: "Material: Coated Paper | Feature: Barcode Printable",
+            label_prod_4_price: "From ¥0.03",
+            label_prod_5: "Roll Label",
+            label_prod_5_spec: "Material: Adhesive Roll | Feature: Auto-labeling Compatible",
+            label_prod_5_price: "From ¥0.04",
+            label_prod_6: "Special Material Label",
+            label_prod_6_spec: "Material: Aluminum Foil/Synthetic | Feature: Heat/Corrosion Resistant",
+            label_prod_6_price: "From ¥0.15",
+            
+            tech_title: "Core Processes",
+            tech_1: "Hot Stamping",
+            tech_2: "Local UV Coating",
+            tech_3: "Die Cutting",
+            tech_4: "Spot Color Printing",
+            tech_5: "Embossing / Debossing",
+            
+            cases_intro: "View more of our successful cooperation cases to witness our quality.",
+            
+            contact_title: "Contact Us",
+            contact_subtitle: "Look forward to cooperating with you",
+            contact_info: "Contact Information",
+            address: "No. 8, Industrial Park Area A, Shenzhen",
+            btn_quote: "Get Free Quote",
+            faq_title: "FAQ",
+            faq_q1: "What are the file requirements?",
+            faq_a1: "Format: AI/CDR/PDF | Color Mode: CMYK | Resolution: 300dpi+ | Bleed: 3mm",
+            faq_q2: "How to handle quality issues?",
+            faq_a2: "Free reprint for quality issues found within 7 days. 1% daily compensation for delays caused by us.",
+            faq_q3: "What is the MOQ?",
+            faq_a3: "MOQ varies by process. Generally 500 for offset printing, 1 for digital printing.",
+            
+            footer_about: "About Dengtai",
+            footer_desc: "Established in 1993, Dengtai Printing is a modern integrated printing enterprise.",
+            footer_links: "Quick Links",
+            footer_support: "Support",
+            link_process: "Process",
+            link_faq: "FAQ",
+            link_tech: "Technology",
+            link_quote: "Get a Quote",
+            rights: "All Rights Reserved",
+            
+            back_products: "Back to Products",
+            btn_get_quote: "Get Free Quote",
+            
+            quote_title: "Get Free Quote",
+            quote_intro: "Fill in the information below, our sales team will provide you with a detailed quote within 24 hours.",
+            form_name: "Your Name",
+            form_company: "Company Name",
+            form_phone: "Phone Number",
+            form_email: "Email Address",
+            form_product: "Product Type",
+            form_quantity: "Estimated Quantity",
+            form_requirements: "Detailed Requirements",
+            opt_box: "Packaging Box",
+            opt_manual: "Manual / Brochure",
+            opt_label: "Labels & Stickers",
+            opt_other: "Other",
+            btn_submit: "Submit Quote Request",
+            quote_contact_title: "Or Contact Us Directly",
+            quote_contact_desc: "Working Hours: Monday to Friday 9:00-18:00"
+        }
+    };
+
+    let currentLang = 'zh';
+
+    function toggleLanguage() {
+        currentLang = currentLang === 'zh' ? 'en' : 'zh';
+        const btnText = document.getElementById('lang-btn-text');
+        if (currentLang === 'zh') {
+            btnText.innerText = "English";
+            document.documentElement.lang = "zh-CN";
+        } else {
+            btnText.innerText = "中文";
+            document.documentElement.lang = "en";
+        }
+        updatePageText();
+    }
+
+    function updatePageText() {
+        const elements = document.querySelectorAll('[data-key]');
+        elements.forEach(el => {
+            const key = el.getAttribute('data-key');
+            if (contentConfig[currentLang][key]) {
+                el.innerText = contentConfig[currentLang][key];
+            }
+        });
+    }
+
+    function switchPage(pageId) {
+        document.querySelectorAll('.page-section').forEach(section => {
+            section.classList.remove('active');
+        });
+        const target = document.getElementById(pageId);
+        if (target) {
+            target.classList.add('active');
+            window.scrollTo(0, 0);
+        }
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.classList.remove('active');
+        });
+        if (event && event.target) {
+            event.target.classList.add('active');
+        }
+    }
+
+    window.onload = function() {
+        updatePageText();
+    };
+</script>
+
+</body>
+</html>
